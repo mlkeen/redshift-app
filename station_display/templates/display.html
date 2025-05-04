@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Station Overview – Redshift</title>
+    <meta http-equiv="refresh" content="10">  <!-- Auto-refresh every 10 seconds -->
+    <style>
+        body { background: black; color: #00ff90; font-family: monospace; padding: 2rem; }
+        h1 { font-size: 2rem; margin-bottom: 1rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.5rem; border-bottom: 1px solid #00ff90; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>STATION CREW STATUS</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Health</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for char in crew %}
+            <tr>
+                <td>{{ char.name }}</td>
+                <td>{{ char.role }}</td>
+                <td>{{ char.health }}</td>
+                <td>{{ char.station_status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
