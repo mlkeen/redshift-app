@@ -5,7 +5,7 @@ body {
   color: #00ff88;
   font-family: 'Share Tech Mono', monospace;
   margin: 0;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 a {
@@ -16,13 +16,15 @@ a:hover {
   text-decoration: underline;
 }
 
-form, .panel {
+form, .panel, .container {
   border: 2px solid #00ff88;
   padding: 1rem;
-  margin: 2rem auto;
+  margin: 1rem auto;
   max-width: 600px;
   background-color: #001a11;
   box-shadow: 0 0 10px #00ff88;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 input, textarea, button {
@@ -33,7 +35,11 @@ input, textarea, button {
   padding: 0.5rem;
   width: 100%;
   margin-bottom: 1rem;
+  box-sizing: border-box;
+  font-size: 1rem;
 }
+
+
 
 input:focus, textarea:focus {
   outline: none;
@@ -43,6 +49,7 @@ input:focus, textarea:focus {
 h1, h2, label {
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-size: 1.2rem;
 }
 
 hr {
@@ -50,11 +57,17 @@ hr {
   border-top: 1px dashed #00ff88;
   margin: 1rem 0;
 }
-
 .blink {
-    animation: blink 1s steps(2, start) infinite;
-  }
-  @keyframes blink {
-    to { visibility: hidden; }
-  }
+  animation: blink 1s steps(2, start) infinite;
+}
+@keyframes blink {
+  to { visibility: hidden; }
+}
+
+pre.logo {
+  text-align: center;
+  font-size: 1rem;
+  margin: 0 auto 1rem;
+  white-space: pre-wrap;
+}
   
