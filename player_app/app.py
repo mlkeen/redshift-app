@@ -17,6 +17,9 @@ def create_app():
     login_manager.init_app(app)
     mail.init_app(app)
 
+    with app.app_context():
+        db.create_all()
+
     login_manager.login_view = 'auth.login'  # redirect route
 
     from player_app.routes.auth import auth_bp
