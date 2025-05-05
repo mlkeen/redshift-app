@@ -1,6 +1,22 @@
-<form method="post">
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Log In</button>
+  <h1>Login</h1>
+
+  <form method="post">
+    <label>Username:</label><br>
+    <input type="text" name="username" required><br><br>
+  
+    <label>Password:</label><br>
+    <input type="password" name="password" required><br><br>
+  
+    <input type="submit" value="Log In">
   </form>
+  
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li style="color: red;">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
   
