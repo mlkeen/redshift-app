@@ -7,7 +7,7 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    return "Welcome to Redshift"
+    return render_template('index.html')
 
 @main_bp.route('/dashboard')
 @login_required
@@ -49,16 +49,24 @@ def create_character():
 
     if request.method == 'POST':
         name = request.form['name']
-        species = request.form['species']
-        role = request.form['role']
-        stats = request.form['stats']
+        position = request.form['position']
+        affiliation = request.form['affiliation']
+        status = request.form['status']
 
-        from .models import Character
+        abilities_raw = request.form.get('abilities', '')
+        items_raw = request.form.get('items', '')
+
+        abilities = [a.strip() for a in abilities_raw.split(',') if a.strip()]
+        items = [i.strip() for i in items_raw.split(',') if i.strip()]
+
         new_char = Character(
             name=name,
-            species=species,
-            role=role,
-            stats=stats,
+            position=position,
+            affiliation=affiliation,
+            status=status,
+            abilities=abilities,
+            items=items,
+            conditions=[],  # Always empty on creation
             user_id=current_user.id
         )
         db.session.add(new_char)
@@ -66,4 +74,17 @@ def create_character():
         flash("Character created.")
         return redirect(url_for('main.dashboard'))
 
+
     return render_template('create_character.html')
+
+
+@main_bp.route('/control/data')
+@login_required
+def control_data():
+    if current_user.role != 'Control':
+        abort(403)
+    abilities = Ability.query.all()
+    conditions = Condition.query.all()
+    items = Item.query.all()
+    return render_template('control_data.html', abilities=abilities, conditions=conditions, items=items)
+

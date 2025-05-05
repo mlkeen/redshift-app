@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redshift</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
+</head>
+<body>
+
+<h1>Game Tables</h1>
+<h2>Abilities</h2>
+<ul>
+  {% for a in abilities %}
+    <li><strong>{{ a.name }}</strong>: {{ a.description }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Conditions</h2>
+<ul>
+  {% for c in conditions %}
+    <li><strong>{{ c.name }}</strong>: {{ c.effect }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Items</h2>
+<ul>
+  {% for i in items %}
+    <li><strong>{{ i.name }}</strong>: {{ i.description }}</li>
+  {% endfor %}
+</ul>
+
+
+</body></html>

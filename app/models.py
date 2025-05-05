@@ -13,11 +13,33 @@ class User(UserMixin, db.Model):
 class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
-    species = db.Column(db.String(64))
-    role = db.Column(db.String(64))
-    stats = db.Column(db.Text)  # JSON string for now
+    position = db.Column(db.String(100))
+    affiliation = db.Column(db.String(100))
+    status = db.Column(db.String(50), default="Nominal")
+
+    abilities = db.Column(db.PickleType, default=list)   # List of strings
+    conditions = db.Column(db.PickleType, default=list)  # List of strings (empty at start)
+    items = db.Column(db.PickleType, default=list)        # List of strings
+
+    stats = db.Column(db.Text, default='{}')  # Optional, for other game logic
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+class Ability(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    description = db.Column(db.Text)
+
+class Condition(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    effect = db.Column(db.Text)
+
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    description = db.Column(db.Text)
+
