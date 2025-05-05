@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Redshift</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
+</head>
+<body>
+
 <h1>Dashboard</h1>
 <p>Hello, {{ current_user.username }}</p>
 
@@ -13,3 +21,6 @@
 
 <a href="{{ url_for('auth.logout') }}">Log out</a>
 
+<p class="blink">>_ Awaiting Input...</p>
+
+</body></html>

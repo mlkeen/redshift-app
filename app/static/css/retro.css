@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+body {
+  background-color: #000;
+  color: #00ff88;
+  font-family: 'Share Tech Mono', monospace;
+  margin: 0;
+  padding: 2rem;
+}
+
+a {
+  color: #00ffee;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+form, .panel {
+  border: 2px solid #00ff88;
+  padding: 1rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  background-color: #001a11;
+  box-shadow: 0 0 10px #00ff88;
+}
+
+input, textarea, button {
+  background-color: #000;
+  color: #00ff88;
+  border: 1px solid #00ff88;
+  font-family: inherit;
+  padding: 0.5rem;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px #00ffaa;
+}
+
+h1, h2, label {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+hr {
+  border: none;
+  border-top: 1px dashed #00ff88;
+  margin: 1rem 0;
+}
+
+.blink {
+    animation: blink 1s steps(2, start) infinite;
+  }
+  @keyframes blink {
+    to { visibility: hidden; }
+  }
+  
