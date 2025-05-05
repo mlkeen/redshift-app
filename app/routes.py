@@ -12,7 +12,14 @@ def index():
 @main_bp.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', character=current_user.character)
+    if current_user.role == 'Control':
+        from .models import User, Character
+        all_users = User.query.all()
+        all_characters = Character.query.all()
+        return render_template('control_dashboard.html', users=all_users, characters=all_characters)
+    else:
+        return render_template('dashboard.html', character=current_user.character)
+
 
 @main_bp.route('/character/edit', methods=['GET', 'POST'])
 @login_required

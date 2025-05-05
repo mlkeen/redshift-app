@@ -7,6 +7,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     is_verified = db.Column(db.Boolean, default=False)
+    role = db.Column(db.String(20), default='Player')  # 'Player' or 'Control'
     character = db.relationship("Character", backref="user", uselist=False)
 
 class Character(db.Model):

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Redshift</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
+</head>
+<body>
+<h1>Control Dashboard</h1>
+<h2>All Users</h2>
+<ul>
+  {% for user in users %}
+    <li>{{ user.username }} ({{ user.role }}) - {{ '✅ Verified' if user.is_verified else '❌ Unverified' }}</li>
+  {% endfor %}
+</ul>
+
+<hr>
+
+<h2>All Characters</h2>
+<ul>
+  {% for char in characters %}
+    <li>{{ char.name }} – {{ char.species }} – {{ char.role }} (Player: {{ char.user.username }})</li>
+  {% endfor %}
+</ul>
+
+<a href="{{ url_for('auth.logout') }}">Log Out</a>
+</body></html>
