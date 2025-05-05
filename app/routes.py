@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from .models import Character
+from .models import Character, Item, User
 from . import db
 
 main_bp = Blueprint('main', __name__)
@@ -88,3 +88,27 @@ def control_data():
     items = Item.query.all()
     return render_template('control_data.html', abilities=abilities, conditions=conditions, items=items)
 
+@main_bp.route('/claim_item', methods=['GET', 'POST'])
+@login_required
+def claim_item():
+    if current_user.role != 'Player':
+        abort(403)
+
+    message = None
+    if request.method == 'POST':
+        code = request.form['code'].strip().upper()
+        item = Item.query.filter_by(code=code).first()
+
+        char = current_user.character
+        if not char:
+            message = "You must create a character before claiming items."
+        elif not item:
+            message = "Invalid code."
+        elif item.name in char.items:
+            message = "Item already claimed."
+        else:
+            char.items.append(item.name)
+            db.session.commit()
+            message = f"Claimed item: {item.name}"
+        
+    return render_template('claim_item.html', message=message)

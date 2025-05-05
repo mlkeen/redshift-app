@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Redshift</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
 <p  style="margin : 0; padding-top:0;">REDSHIFT CORP // TERMINAL ACCESS NODE</p>
 <p style="margin : 0; padding-top:0;">>>> SYSTEM CHECK: PASSED</p>
@@ -48,12 +42,12 @@
 {% endif %}
 
 
+  <p><a href="{{ url_for('main.claim_item') }}">Claim Item with Code</a></p>
 
 
 
 <a href="{{ url_for('auth.logout') }}">Log out</a>
 
-<p class="blink">>_ Awaiting Input...</p>
 
 
-</body></html>
+{% endblock %}

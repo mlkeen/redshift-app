@@ -71,3 +71,42 @@ pre.logo {
   white-space: pre-wrap;
 }
   
+.nav-bar {
+  font-family: 'Share Tech Mono', monospace;
+  background-color: #001a11;
+  color: #00ff88;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  border-bottom: 2px dashed #00ff88;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+
+.nav-bar a {
+  color: #00ffee;
+  margin: 0 0.5rem;
+  text-decoration: none;
+}
+
+.nav-bar a:hover {
+  text-decoration: underline;
+  color: #00ffcc;
+}
+
+.player-nav {
+  background-color: #001a11;
+}
+
+.control-nav {
+  background-color: #110011;
+  color: #ff0088;
+  border-bottom-color: #ff0088;
+}
+
+.control-nav a {
+  color: #ff66cc;
+}
+
+.control-nav a:hover {
+  color: #ff99dd;
+}
