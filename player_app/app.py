@@ -17,9 +17,6 @@ def create_app():
     login_manager.init_app(app)
     mail.init_app(app)
 
-    with app.app_context():
-        db.create_all()
-
     login_manager.login_view = 'auth.login'  # redirect route
 
     from player_app.routes.auth import auth_bp
@@ -27,6 +24,13 @@ def create_app():
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(character_bp)
+
+    #with app.app_context():
+    #    db.create_all()
+    with app.app_context():
+        print("🔍 Registered routes:")
+        for rule in app.url_map.iter_rules():
+            print(f"{rule.endpoint}: {rule}")
 
     return app
 
