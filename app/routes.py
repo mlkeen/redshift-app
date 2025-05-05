@@ -32,3 +32,31 @@ def edit_character():
         return redirect(url_for('main.dashboard'))
 
     return render_template('edit_character.html', character=char)
+
+@main_bp.route('/character/create', methods=['GET', 'POST'])
+@login_required
+def create_character():
+    if current_user.character:
+        flash("You already have a character.")
+        return redirect(url_for('main.dashboard'))
+
+    if request.method == 'POST':
+        name = request.form['name']
+        species = request.form['species']
+        role = request.form['role']
+        stats = request.form['stats']
+
+        from .models import Character
+        new_char = Character(
+            name=name,
+            species=species,
+            role=role,
+            stats=stats,
+            user_id=current_user.id
+        )
+        db.session.add(new_char)
+        db.session.commit()
+        flash("Character created.")
+        return redirect(url_for('main.dashboard'))
+
+    return render_template('create_character.html')

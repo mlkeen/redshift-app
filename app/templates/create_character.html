@@ -1,0 +1,18 @@
+<h1>Create Your Character</h1>
+<form method="post">
+  <label>Name:</label><br>
+  <input type="text" name="name" required><br><br>
+
+  <label>Species:</label><br>
+  <input type="text" name="species"><br><br>
+
+  <label>Role:</label><br>
+  <input type="text" name="role"><br><br>
+
+  <label>Stats (JSON string):</label><br>
+  <textarea name="stats" rows="4" cols="40">{}</textarea><br><br>
+
+  <input type="submit" value="Create Character">
+</form>
+
+<p><a href="{{ url_for('main.dashboard') }}">← Back to Dashboard</a></p>

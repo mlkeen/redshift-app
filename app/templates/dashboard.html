@@ -7,7 +7,9 @@
   <p>Role: {{ character.role }}</p>
   <p><a href="{{ url_for('main.edit_character') }}">Edit Character</a></p>
 {% else %}
-  <p>No character assigned.</p>
+  <p>You don't have a character yet.</p>
+  <p><a href="{{ url_for('main.create_character') }}">Create One Now</a></p>
 {% endif %}
 
 <a href="{{ url_for('auth.logout') }}">Log out</a>
+
