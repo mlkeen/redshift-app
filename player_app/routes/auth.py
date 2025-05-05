@@ -7,6 +7,10 @@ import secrets
 
 auth_bp = Blueprint("auth", __name__)
 
+@auth_bp.route("/health")
+def health_check():
+    return "OK", 200
+
 @auth_bp.route("/")
 def index():
     if current_user.is_authenticated:
