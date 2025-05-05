@@ -3,4 +3,5 @@ Flask-SQLAlchemy==3.1.1
 python-dotenv==1.0.0
 Flask-Login
 Flask-Mail
-email-validator  # needed for email field validation in forms
+email-validator 
+gunicorn
