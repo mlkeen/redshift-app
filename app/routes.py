@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from .models import Character, Item, User
+from .models import Character, Item, User, Ability, Condition
 from . import db
 
 main_bp = Blueprint('main', __name__)
@@ -87,6 +87,42 @@ def control_data():
     conditions = Condition.query.all()
     items = Item.query.all()
     return render_template('control_data.html', abilities=abilities, conditions=conditions, items=items)
+
+@main_bp.route('/control/character/<int:char_id>', methods=['GET', 'POST'])
+@login_required
+def edit_character_control(char_id):
+    if current_user.role != 'Control':
+        abort(403)
+
+    char = Character.query.get_or_404(char_id)
+    all_items = Item.query.all()
+    all_abilities = Ability.query.all()
+    all_conditions = Condition.query.all()
+
+    if request.method == 'POST':
+        # Update status
+        char.status = request.form.get('status', 'Nominal')
+
+        # Update lists (clear and repopulate)
+        char.items = request.form.getlist('items')
+        char.abilities = request.form.getlist('abilities')
+        char.conditions = request.form.getlist('conditions')
+
+        db.session.commit()
+        flash("Character updated.")
+        return redirect(url_for('main.edit_character_control', char_id=char.id))
+
+    return render_template(
+        'edit_character_control.html',
+        char=char,
+        all_items=all_items,
+        all_abilities=all_abilities,
+        all_conditions=all_conditions
+    )
+
+
+
+
 
 @main_bp.route('/claim_item', methods=['GET', 'POST'])
 @login_required

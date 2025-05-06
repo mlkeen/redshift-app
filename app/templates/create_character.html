@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Redshift</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
 <h1>Create Your Character</h1>
 <form method="post">
@@ -30,7 +24,4 @@
   <input type="submit" value="Create Character">
 </form>
 
-
-<p><a href="{{ url_for('main.dashboard') }}">← Back to Dashboard</a></p>
-</body>
-</html>
+{% endblock %}

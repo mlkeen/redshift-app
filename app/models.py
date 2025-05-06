@@ -21,7 +21,6 @@ class Character(db.Model):
     conditions = db.Column(db.PickleType, default=list)  # List of strings (empty at start)
     items = db.Column(db.PickleType, default=list)        # List of strings
 
-    stats = db.Column(db.Text, default='{}')  # Optional, for other game logic
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 @login_manager.user_loader

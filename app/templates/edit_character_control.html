@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Edit: {{ char.name }}</h2>
+<p><em>{{ char.position }} of {{ char.affiliation }}</em></p>
+
+<form method="post">
+  <label>Status:</label>
+  <input type="text" name="status" value="{{ char.status }}" required>
+
+  <h3>Abilities</h3>
+  <div class="card-grid">
+    {% for ability in all_abilities %}
+      <label class="card {% if ability.name in char.abilities %}checked{% endif %}">
+        <input type="checkbox" name="abilities" value="{{ ability.name }}"
+               {% if ability.name in char.abilities %}checked{% endif %}>
+        <div class="title">{{ ability.name }}</div>
+        <div class="desc">{{ ability.description }}</div>
+      </label>
+    {% endfor %}
+  </div>  
+
+
+  <h3>Items</h3>
+  <div class="card-grid">
+    {% for item in all_items %}
+      <label class="card {% if item.name in char.items %}checked{% endif %}">
+        <input type="checkbox" name="items" value="{{ item.name }}"
+               {% if item.name in char.items %}checked{% endif %}>
+        <div class="title">{{ item.name }}</div>
+        <div class="desc">{{ item.description }}</div>
+      </label>
+    {% endfor %}
+  </div>  
+
+  <h3>Conditions</h3>
+  <div class="card-grid">
+    {% for cond in all_conditions %}
+      <label class="card {% if cond.name in char.conditions %}checked{% endif %}">
+        <input type="checkbox" name="conditions" value="{{ cond.name }}"
+               {% if cond.name in char.conditions %}checked{% endif %}>
+        <div class="title">{{ cond.name }}</div>
+        <div class="desc">{{ cond.description }}</div>
+      </label>
+    {% endfor %}
+  </div>  
+
+
+
+  <br>
+  <button type="submit">Update Character</button>
+</form>
+
+{% endblock %}

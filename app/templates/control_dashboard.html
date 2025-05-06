@@ -13,9 +13,13 @@
 <h2>All Characters</h2>
 <ul>
   {% for char in characters %}
-    <li>{{ char.name }} – {{ char.species }} – {{ char.role }} (Player: {{ char.user.username }})</li>
+    <li>
+      {{ char.name }} – <em>{{ char.position }}</em> [{{ char.status }}] (Player: {{ char.user.username }})
+      <a href="{{ url_for('main.edit_character_control', char_id=char.id) }}">[ Edit ]</a>
+    </li>
   {% endfor %}
 </ul>
+
 
 <a href="{{ url_for('auth.logout') }}">Log Out</a>
 
