@@ -6,20 +6,17 @@ body {
   font-family: 'Share Tech Mono', monospace;
   margin: 0;
   padding: 1rem;
-  animation: flickerAnim 2.4s infinite alternate;
+  animation: flickerAnim 3.6s infinite alternate;
 }
 
 a, h1, h2, h3, p, label, input, textarea, button, .nav-bar, .panel {
-  animation: flickerAnim 2.4s infinite alternate;
+  animation: flickerAnim 3.6s infinite alternate;
 }
 
-a {
-  color: #00ffee;
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
+a {  text-decoration: none; color: #00ff88;}
+a:hover {  text-decoration: underline;}
+a:before { content: "["; color: #00ff88;}
+a:after { content: "]"; color: #00ff88;}
 
 form, .panel, .container {
   border: 2px solid #00ff88;
@@ -44,8 +41,6 @@ input, textarea, button {
   font-size: 1rem;
 }
 
-
-
 input:focus, textarea:focus {
   outline: none;
   box-shadow: 0 0 5px #00ffaa;
@@ -61,12 +56,6 @@ hr {
   border: none;
   border-top: 1px dashed #00ff88;
   margin: 1rem 0;
-}
-.blink {
-  animation: blink 1s steps(2, start) infinite;
-}
-@keyframes blink {
-  to { visibility: hidden; }
 }
 
 pre.logo {
@@ -88,7 +77,6 @@ pre.logo {
 }
 
 .nav-bar a {
-  color: #00ffee;
   margin: 0 0.5rem;
   text-decoration: none;
 }
@@ -98,31 +86,14 @@ pre.logo {
   color: #00ffcc;
 }
 
-.player-nav {
-  background-color: #001a11;
-}
-
-.control-nav {
-  background-color: #110011;
-  color: #ff0088;
-  border-bottom-color: #ff0088;
-}
-
-.control-nav a {
-  color: #ff66cc;
-}
-
-.control-nav a:hover {
-  color: #ff99dd;
-}
 
 @keyframes flickerAnim {
-  0%   { opacity: 1; text-shadow: 0 0 2px #00ff88; }
-  15%  { opacity: 0.93; text-shadow: 0 0 3px #00ffaa; }
+  0%   { opacity: 1; text-shadow: 0 0 1px #00ff88; }
+  15%  { opacity: 0.95; text-shadow: 0 0 2px #00ffaa; }
   20%  { opacity: 1; text-shadow: 0 0 1px #00cc88; }
-  35%  { opacity: 0.98; }
+  35%  { opacity: 0.99; }
   40%  { opacity: 1; }
-  90%  { opacity: 0.96; text-shadow: 0 0 4px #00ffaa; }
+  90%  { opacity: 0.98; text-shadow: 0 0 2px #00ffaa; }
   100% { opacity: 1; }
 }
 
@@ -142,10 +113,12 @@ body::before {
     transparent 3px
   );
   z-index: 9999;
-  animation: roll 180s linear infinite;
+  animation: roll 60s linear infinite;
 }
 
 @keyframes roll {
   0% { background-position: 0 0; }
   100% { background-position: 0 100px; }
 }
+
+

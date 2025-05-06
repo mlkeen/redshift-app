@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p  style="margin : 0; padding-top:0;">REDSHIFT CORP // TERMINAL ACCESS NODE</p>
-<p style="margin : 0; padding-top:0;">>>> SYSTEM CHECK: PASSED</p>
-<p style="margin : 0; padding-top:0;">>>> Hello, {{ current_user.username }}</p>
-
 {% if character %}
 <h2>{{ character.name }}</h2>
 <p><em>{{ character.position }} of {{ character.affiliation }}</em></p>
@@ -40,13 +36,6 @@
   <p>You don't have a character yet.</p>
   <p><a href="{{ url_for('main.create_character') }}">Create One Now</a></p>
 {% endif %}
-
-
-  <p><a href="{{ url_for('main.claim_item') }}">Claim Item with Code</a></p>
-
-
-
-<a href="{{ url_for('auth.logout') }}">Log out</a>
 
 
 
