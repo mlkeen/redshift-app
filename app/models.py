@@ -1,5 +1,6 @@
 from . import db, login_manager
 from flask_login import UserMixin
+from datetime import datetime
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -8,6 +9,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(128), nullable=False)
     is_verified = db.Column(db.Boolean, default=False)
     role = db.Column(db.String(20), default='Player')  # 'Player' or 'Control'
+    theme = db.Column(db.String(32), default='theme-green')
     character = db.relationship("Character", backref="user", uselist=False)
 
 class Character(db.Model):
@@ -43,3 +45,14 @@ class Item(db.Model):
     description = db.Column(db.Text)
     code = db.Column(db.String(10), unique=True, nullable=False)
 
+
+class Display(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True, nullable=False)  # e.g. "Med Bay"
+    location = db.Column(db.String(64))  # Optional extra label
+    message = db.Column(db.Text)  # Displayed text block or status
+    alert_level = db.Column(db.String(32), default="Nominal")  # e.g. Nominal, Warning, Critical
+    animation_mode = db.Column(db.String(32), default="pulse")  # e.g. pulse, flicker, scan
+    code = db.Column(db.String(16), unique=True)
+    image_filename = db.Column(db.String(128))  # optional
+    last_updated = db.Column(db.DateTime, default=datetime.utcnow)

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Create Display</h2>
+<form method="post">
+  <label>Name:</label>
+  <input type="text" name="name" required><br><br>
+  <label>Location (optional):</label>
+  <input type="text" name="location"><br><br>
+  <button type="submit">Create</button>
+</form>
+{% endblock %}

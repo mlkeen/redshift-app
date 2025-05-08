@@ -1,8 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
+:root {
+  --color-bg:         #001a11;
+}
+
+.theme-green {
+  --color-fg:         #00ff88;
+  --color-accent:     #00ffaa;
+  --color-border:     #00cc88;
+  --color-muted:      #004422;
+}
+
+.theme-yellow {
+  --color-fg:         #ffee55;
+  --color-accent:     #ffdd33;
+  --color-border:     #ffaa00;
+  --color-muted:      #ff6600;
+}
+
 body {
-  background-color: #001a11;
-  color: #00ff88;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
   font-family: 'Share Tech Mono', monospace;
   margin: 0;
   padding: 1rem;
@@ -13,26 +31,28 @@ a, h1, h2, h3, p, label, input, textarea, button, .nav-bar, .panel {
   animation: flickerAnim 3.6s infinite alternate;
 }
 
-a {  text-decoration: none; color: #00ff88;}
+a {  text-decoration: none; color: var(--color-fg)}
 a:hover {  text-decoration: underline;}
-a:before { content: "["; color: #00ff88;}
-a:after { content: "]"; color: #00ff88;}
+a:before { content: " [ "; color: var(--color-fg)}
+a:after { content: " ] "; color: var(--color-fg)}
 
 form, .panel, .container {
-  border: 2px solid #00ff88;
+  border: 2px solid var(--color-fg);
   padding: 1rem;
   margin: 1rem auto;
-  max-width: 600px;
-  background-color: #001a11;
-  box-shadow: 0 0 10px #00ff88;
+  max-width: 800px;
+  background-color: var(--color-bg);
+  box-shadow: 0 0 10px var(--color-fg);
   width: 100%;
   box-sizing: border-box;
 }
 
+form.errata  {border: 0; display:inline; box-shadow: none;}
+
 input, textarea, button {
-  background-color: #001a11;
-  color: #00ff88;
-  border: 1px solid #00ff88;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  border: 1px solid var(--color-fg);
   font-family: inherit;
   padding: 0.5rem;
   margin-bottom: 1rem;
@@ -41,21 +61,23 @@ input, textarea, button {
 }
 
 input:focus, textarea:focus {
-  background-color: #001a11;
-  color: #00ff88;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
   outline: none;
-  box-shadow: 0 0 5px #00ffaa;
+  box-shadow: 0 0 5px var(--color-accent);
 }
 
-h1, h2, label {
+h1, h2, h3, label {
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 1rem;
 }
+h3:before { content: "<"; color: var(--color-fg);}
+h3:after { content: ">"; color: var(--color-fg);}
 
 hr {
   border: none;
-  border-top: 1px dashed #00ff88;
+  border-top: 1px dashed var(--color-fg);
   margin: 1rem 0;
 }
 
@@ -68,11 +90,11 @@ pre.logo {
   
 .nav-bar {
   font-family: 'Share Tech Mono', monospace;
-  background-color: #001a11;
-  color: #00ff88;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
   padding: 0.5rem 1rem;
   text-align: center;
-  border-bottom: 2px dashed #00ff88;
+  border-bottom: 2px dashed var(--color-fg);
   font-size: 0.95rem;
   letter-spacing: 0.05em;
 }
@@ -84,17 +106,17 @@ pre.logo {
 
 .nav-bar a:hover {
   text-decoration: underline;
-  color: #00ffcc;
+  color: var(--color-accent);
 }
 
 
 @keyframes flickerAnim {
-  0%   { opacity: 1; text-shadow: 0 0 1px #00ff88; }
-  15%  { opacity: 0.95; text-shadow: 0 0 2px #00ffaa; }
-  20%  { opacity: 1; text-shadow: 0 0 1px #00cc88; }
+  0%   { opacity: 1; text-shadow: 0 0 1px var(--color-fg); }
+  15%  { opacity: 0.95; text-shadow: 0 0 2px var(--color-accent); }
+  20%  { opacity: 1; text-shadow: 0 0 1px var(--color-border); }
   35%  { opacity: 0.99; }
   40%  { opacity: 1; }
-  90%  { opacity: 0.98; text-shadow: 0 0 2px #00ffaa; }
+  90%  { opacity: 0.98; text-shadow: 0 0 2px var(--color-accent); }
   100% { opacity: 1; }
 }
 
@@ -132,8 +154,8 @@ body::before {
 }
 
 .card {
-  background-color: #001a11;
-  border: 1px solid #00ff88;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-fg);
   border-radius: 6px;
   padding: 1rem;
   width: 180px;
@@ -157,15 +179,16 @@ body::before {
 
 .card .desc {
   font-style: italic;
-  color: #00ffaa;
+  color: var(--color-accent);
   opacity: 0.85;
 }
 
 .card:hover {
-  background-color: red;
+  background-color: var(--color-fg);
+  opacity: 0.8;
 }
 
 .card.checked {
-  background-color: #003b22;
-  border-color: #00ffaa;
+  background-color: var(--color-muted);
+  border-color: var(--color-accent);
 }

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Edit Display: {{ display.name }}</h2>
+
+<form method="post" enctype="multipart/form-data">
+  <label>Message:</label><br>
+  <textarea name="message" rows="6" style="width:100%;">{{ display.message }}</textarea><br><br>
+
+  <label>Alert Level:</label>
+  <select name="alert_level">
+    <option value="Nominal" {% if display.alert_level == 'Nominal' %}selected{% endif %}>Nominal</option>
+    <option value="Warning" {% if display.alert_level == 'Warning' %}selected{% endif %}>Warning</option>
+    <option value="Critical" {% if display.alert_level == 'Critical' %}selected{% endif %}>Critical</option>
+  </select><br><br>
+
+  <label>Animation Mode:</label>
+  <select name="animation_mode">
+    <option value="pulse" {% if display.animation_mode == 'pulse' %}selected{% endif %}>Pulse</option>
+    <option value="flicker" {% if display.animation_mode == 'flicker' %}selected{% endif %}>Flicker</option>
+    <option value="scan" {% if display.animation_mode == 'scan' %}selected{% endif %}>Scan</option>
+  </select><br><br>
+
+  <button type="submit">Update Display</button>
+  <label>Upload Line Art:</label>
+  <input type="file" name="lineart"><br><br>
+
+  <button type="submit">Update Display</button>
+</form>
+
+{% endblock %}

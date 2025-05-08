@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ display.name }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/display.css') }}">
+</head>
+<body class="display {{ display.alert_level|lower }} {{ display.animation_mode }}">
+  <div class="display-container">
+    <header class="display-header">
+      <h1>{{ display.name }}</h1>
+      {% if display.location %}<p class="location">{{ display.location }}</p>{% endif %}
+    </header>
+
+    <section class="display-id">
+      <p><strong>ID:</strong> {{ display.code or "UNREGISTERED" }}</p>
+      <img src="{{ url_for('main.display_qr', display_id=display.id) }}" alt="QR Code" class="qr-code">
+    </section>
+    
+    <section class="display-status">
+      <p><strong>Status:</strong> {{ display.alert_level }}</p>
+      <p><strong>Message:</strong> {{ display.message }}</p>
+    </section>
+
+    <section class="display-logs">
+      <p>Last Event:</p>
+      <ul>
+        <li>Power Diagnostics Complete</li>
+        <li>Med Drone Online</li>
+        <li>System Sync: {{ display.last_updated.strftime('%H:%M:%S') }}</li>
+      </ul>
+    </section>
+
+    {% if display.image_filename %}
+    <section class="display-lineart">
+      <img src="{{ url_for('static', filename='uploads/' + display.image_filename) }}" class="lineart-img" alt="Line art">
+    </section>
+    {% endif %}
+    
+
+    <section class="display-datapulse">
+      <div class="code-grid" id="codeGrid">
+        <!-- Filled by JavaScript -->
+      </div>
+    </section>
+    
+    <footer class="display-footer">
+      <p>CYCLE 3 // {{ display.last_updated.strftime('%H:%M STATION TIME') }}</p>
+    </footer>
+  </div>
+
+  <script>
+    const grid = document.getElementById('codeGrid');
+  
+    function randomCode(length = 8) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return result;
+    }
+  
+    function fillCodeGrid() {
+      grid.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const cell = document.createElement('span');
+        cell.textContent = randomCode();
+        grid.appendChild(cell);
+      }
+    }
+  
+    fillCodeGrid();
+    setInterval(fillCodeGrid, 4000);
+  </script>
+  
+
+</body>
+</html>

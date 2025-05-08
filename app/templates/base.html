@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
 </head>
-<body>
+<body class="{{ current_user.theme if current_user.is_authenticated else 'theme-green' }}">
+
 <div class="crt>"
     <div class="nav-bar {% if current_user.role == 'Control' %}control-nav{% else %}player-nav{% endif %}">
         REDSHIFT // {{ current_user.role if current_user.is_authenticated else "GUEST" }} MODE<BR/>
@@ -35,6 +36,15 @@
   {% block content %}{% endblock %}
 
   // TERMINAL NODE // ACCESS AUTH: {{ current_user.username }} 
+
+  <form action="{{ url_for('main.set_theme') }}" method="POST" class="errata">
+    <label for="themeSelect">Theme:</label>
+    <select id="themeSelect" name="theme" onchange="this.form.submit()">
+      <option value="theme-green" {% if current_user.theme == 'theme-green' %}selected{% endif %}>Green</option>
+      <option value="theme-yellow" {% if current_user.theme == 'theme-yellow' %}selected{% endif %}>Yellow</option>
+    </select>
+  </form>
+  
 
 </div>
 </body>

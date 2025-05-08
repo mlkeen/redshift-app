@@ -7,6 +7,18 @@
   <label>Status:</label>
   <input type="text" name="status" value="{{ char.status }}" required>
 
+  <h3>Conditions</h3>
+  <div class="card-grid">
+    {% for cond in all_conditions %}
+      <label class="card {% if cond.name in char.conditions %}checked{% endif %}">
+        <input type="checkbox" name="conditions" value="{{ cond.name }}"
+               {% if cond.name in char.conditions %}checked{% endif %}>
+        <div class="title">{{ cond.name }}</div>
+        <div class="desc">{{ cond.description }}</div>
+      </label>
+    {% endfor %}
+  </div>  
+
   <h3>Abilities</h3>
   <div class="card-grid">
     {% for ability in all_abilities %}
@@ -31,20 +43,6 @@
       </label>
     {% endfor %}
   </div>  
-
-  <h3>Conditions</h3>
-  <div class="card-grid">
-    {% for cond in all_conditions %}
-      <label class="card {% if cond.name in char.conditions %}checked{% endif %}">
-        <input type="checkbox" name="conditions" value="{{ cond.name }}"
-               {% if cond.name in char.conditions %}checked{% endif %}>
-        <div class="title">{{ cond.name }}</div>
-        <div class="desc">{{ cond.description }}</div>
-      </label>
-    {% endfor %}
-  </div>  
-
-
 
   <br>
   <button type="submit">Update Character</button>

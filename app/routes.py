@@ -1,7 +1,20 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file
 from flask_login import login_required, current_user
-from .models import Character, Item, User, Ability, Condition
+from .models import Character, Item, User, Ability, Condition, Display
 from . import db
+import qrcode
+import io
+import os
+from PIL import Image
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 main_bp = Blueprint('main', __name__)
 
@@ -148,3 +161,89 @@ def claim_item():
             message = f"Claimed item: {item.name}"
         
     return render_template('claim_item.html', message=message)
+
+@main_bp.route('/set_theme', methods=['POST'])
+@login_required
+def set_theme():
+    theme = request.form.get('theme', 'theme-green')
+    if theme not in ['theme-green', 'theme-yellow']:
+        abort(400)
+    current_user.theme = theme
+    db.session.commit()
+    return redirect(request.referrer or url_for('main.dashboard'))
+
+
+@main_bp.route('/control/displays')
+@login_required
+def manage_displays():
+    if current_user.role != 'Control':
+        abort(403)
+    displays = Display.query.all()
+    return render_template('displays.html', displays=displays)
+
+@main_bp.route('/control/displays/edit/<int:display_id>', methods=['GET', 'POST'])
+@login_required
+def edit_display(display_id):
+    if current_user.role != 'Control':
+        abort(403)
+    display = Display.query.get_or_404(display_id)
+    if 'lineart' in request.files:
+        file = request.files['lineart']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(f"display_{display.id}.png")
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+
+            # Convert to monochrome and apply theme
+            img = Image.open(file).convert('L').point(lambda x: 0 if x < 128 else 255, '1')
+            print(filepath)
+            # Save for future recoloring (use original 1-bit image as mask)
+            img.save(filepath)
+            print("Saved!")
+            display.image_filename = filename
+            db.session.commit()
+    if request.method == 'POST':
+        display.message = request.form['message']
+        display.alert_level = request.form['alert_level']
+        display.animation_mode = request.form['animation_mode']
+        db.session.commit()
+        flash("Display updated.")
+        return redirect(url_for('main.manage_displays'))
+    return render_template('edit_display.html', display=display)
+    
+
+@main_bp.route('/display/<int:display_id>')
+def show_display(display_id):
+    display = Display.query.get_or_404(display_id)
+    return render_template('show_display.html', display=display)
+
+@main_bp.route('/control/displays/new', methods=['GET', 'POST'])
+@login_required
+def create_display():
+    if current_user.role != 'Control':
+        abort(403)
+    if request.method == 'POST':
+        name = request.form['name']
+        location = request.form.get('location', '')
+        new_display = Display(
+            name=name,
+            location=location,
+            message='Welcome to ' + name,
+            alert_level='Nominal',
+            animation_mode='pulse'
+        )
+        db.session.add(new_display)
+        db.session.commit()
+        return redirect(url_for('main.manage_displays'))
+    return render_template('create_display.html')
+
+@main_bp.route('/display/<int:display_id>/qr')
+def display_qr(display_id):
+    display = Display.query.get_or_404(display_id)
+    url = url_for('main.show_display', display_id=display.id, _external=True)
+    img = qrcode.make(url)
+
+    buf = io.BytesIO()
+    img.save(buf)
+    buf.seek(0)
+    return send_file(buf, mimetype='image/png')
+

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Station Displays</h1>
+<ul>
+  {% for display in displays %}
+    <li>
+      <strong>{{ display.name }}</strong> –
+      <em>{{ display.alert_level }}</em>
+      <a href="{{ url_for('main.edit_display', display_id=display.id) }}">[Edit]</a>
+      <a href="{{ url_for('main.show_display', display_id=display.id) }}" target="_blank">[View]</a>
+    </li>
+  {% endfor %}
+</ul>
+<p><a href="{{ url_for('main.create_display') }}">[ New Display ]</a></p>
+{% endblock %}

@@ -1,0 +1,138 @@
+body.display {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  color: var(--color-fg, #00ff88);
+  font-family: 'Share Tech Mono', monospace;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.display-container {
+  width: 90vw;
+  max-width: 1000px;
+  border: 2px solid var(--color-border, #00ffaa);
+  padding: 2rem;
+  text-align: center;
+  animation: flicker 2s infinite alternate;
+}
+
+.display-header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.display-header .location {
+  font-size: 1rem;
+  color: var(--color-accent, #00ffaa);
+  margin-top: 0.5rem;
+}
+
+.display-status {
+  margin: 2rem 0;
+  font-size: 1.2rem;
+}
+
+.display-logs {
+  background-color: #001a11;
+  padding: 1rem;
+  border: 1px solid var(--color-border, #00ffaa);
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.display-logs ul {
+  margin: 0;
+  padding-left: 1rem;
+  list-style-type: "◉ ";
+}
+
+.display-footer {
+  font-size: 0.9rem;
+  color: var(--color-accent, #00ffaa);
+  border-top: 1px dashed var(--color-border, #00ffaa);
+  padding-top: 0.5rem;
+}
+
+/* Alert coloring */
+.nominal { --color-fg: #00ff88; --color-border: #00ffaa; }
+.warning { --color-fg: #ffaa00; --color-border: #ffcc66; }
+.critical { --color-fg: #ff0033; --color-border: #ff6699; }
+
+/* Animation */
+@keyframes flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.95; }
+  80% { opacity: 0.92; }
+  100% { opacity: 1; }
+}
+
+.pulse .display-container {
+  animation: pulseGlow 2s infinite alternate;
+}
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 5px var(--color-fg); }
+  100% { box-shadow: 0 0 20px var(--color-fg); }
+}
+
+.display-id {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  text-align: right;
+  font-size: 0.9rem;
+  color: var(--color-accent, #00ffaa);
+}
+
+.qr-code {
+  width: 80px;
+  height: 80px;
+  margin-top: 0.25rem;
+  border: 1px solid var(--color-border);
+  background-color: white;
+}
+
+.display-datapulse {
+  margin-top: 2rem;
+}
+
+.code-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  font-size: 1.2rem;
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--color-accent, #00ffaa);
+  justify-items: center;
+  animation: flicker 0.4s ease-in-out;
+}
+
+.code-grid span {
+  display: block;
+  padding: 0.25rem 0.5rem;
+  border: 1px dashed var(--color-border);
+  background-color: rgba(0, 255, 136, 0.05);
+  transition: opacity 0.3s ease;
+  text-align: center;
+}
+
+.display-lineart {
+  margin: 2rem auto;
+  width: 400px;
+  height: 400px;
+  border: 2px solid var(--color-border);
+  background-color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lineart-img {
+  max-width: 100%;
+  max-height: 100%;
+  filter: brightness(0) saturate(100%) invert(1);
+}
+

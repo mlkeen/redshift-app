@@ -1,6 +1,6 @@
 import os
 from app import create_app, db
-from app.models import User, Character
+from app.models import User, Character, Display
 from dotenv import load_dotenv
 load_dotenv()
 
