@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if current_user.character %}
+<div class="character-block">
+  <img src="{{ url_for('static', filename='images/' + (current_user.character.image_filename or 'fallback.png')) }}"
+     alt="portrait">
+
+  <div class="char-info">
+    <strong>{{ current_user.character.name.split()[:-1]|join(' ') }} {{ current_user.character.name.split()[-1]|upper }}</strong><br>
+    {{ current_user.character.position }}<br>
+    {{ current_user.character.affiliation }}<br>
+    <a href="{{ url_for('main.edit_character') }}">Edit</a>
+  </div>
+</div>
+{% else %}
+<div class="character-block create">
+  <a href="{{ url_for('main.create_character') }}">Create Your Character</a>
+</div>
+{% endif %}
+
+{% if current_user.character and current_user.character.alerts %}
+<div class="alert-block">
+  {% for alert in current_user.character.alerts %}
+    <p class="alert">{{ alert }}</p>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if current_user.character and current_user.character.conditions %}
+<div class="condition-block">
+  <h3>Conditions</h3>
+  <ul>
+    {% for condition in current_user.character.conditions %}
+      <li>{{ condition }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div class="abilities-block">
+  <h3>Abilities</h3>
+  <!-- To be populated -->
+</div>
+
+<div class="items-block">
+  <h3>Items</h3>
+  <!-- To be populated -->
+</div>
+
+<div class="nav-bar-bottom">
+  <a href="{{ url_for('main.dashboard') }}">Home</a>
+  <a href="{{ url_for('main.claim_item') }}">Claim Item</a>
+  <a href="{{ url_for('auth.logout') }}">Logout</a>
+</div>
+{% endblock %}

@@ -18,7 +18,7 @@ class Character(db.Model):
     position = db.Column(db.String(100))
     affiliation = db.Column(db.String(100))
     status = db.Column(db.String(50), default="Nominal")
-
+    image_filename = db.Column(db.String(128))  # optional
     abilities = db.Column(db.PickleType, default=list)   # List of strings
     conditions = db.Column(db.PickleType, default=list)  # List of strings (empty at start)
     items = db.Column(db.PickleType, default=list)        # List of strings

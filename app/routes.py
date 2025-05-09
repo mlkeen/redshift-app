@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file
 from flask_login import login_required, current_user
 from .models import Character, Item, User, Ability, Condition, Display
+from app.models import GameState
 from . import db
 import qrcode
 import io
@@ -31,7 +32,16 @@ def dashboard():
         all_characters = Character.query.all()
         return render_template('control_dashboard.html', users=all_users, characters=all_characters)
     else:
-        return render_template('dashboard.html', character=current_user.character)
+        character = current_user.character
+        state = GameState.query.get(1)  # Ensure there's one GameState row
+        time_remaining = "00:00"  # TODO: replace with actual logic if needed
+        return render_template(
+            'player/dashboard.html',
+            character=current_user.character,
+            state=state,
+            time_remaining=time_remaining
+        )
+        #return render_template('player/dashboard.html', character=current_user.character)
 
 
 @main_bp.route('/character/edit', methods=['GET', 'POST'])

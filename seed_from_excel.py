@@ -38,7 +38,7 @@ def populate_from_excel(filename):
             for row in list(wb['Conditions'].iter_rows(min_row=2)):
                 db.session.add(Condition(
                     name=get_cell(row, 0),
-                    description=get_cell(row, 1)
+                    effect=get_cell(row, 1)
                 ))
 
         # Displays
@@ -77,4 +77,4 @@ def populate_from_excel(filename):
         print("Seed data loaded successfully.")
 
 if __name__ == '__main__':
-    populate_from_excel('seed_data.xlsx')
+    populate_from_excel('C:/Users/Matt/Documents/Redshift/seed_data.xlsx')
