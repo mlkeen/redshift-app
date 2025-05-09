@@ -9,7 +9,9 @@
 <body class="{{ current_user.theme if current_user.is_authenticated else 'theme-green' }}">
 
 <div class="top-bar">
-  REDSHIFT // PHASE {{ state.current_phase }} // {{ time_remaining }} REMAINING<br/>
+  REDSHIFT // 
+  {% if state %} {{ state.current_phase }} {% else %} STATE UNKNOWN {% endif %}
+   // {{ time_remaining }} REMAINING<br/>
   {{ 'CONTROL' if current_user.role == 'Control' else 'PLAYER' }} {{ current_user.username }} // TERMINAL NODE
 </div>
   
