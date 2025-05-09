@@ -214,6 +214,7 @@ def edit_display(display_id):
 @main_bp.route('/display/<int:display_id>')
 def show_display(display_id):
     display = Display.query.get_or_404(display_id)
+    state = GameState.query.get(1)
     return render_template('show_display.html', display=display)
 
 @main_bp.route('/control/displays/new', methods=['GET', 'POST'])
@@ -247,3 +248,24 @@ def display_qr(display_id):
     buf.seek(0)
     return send_file(buf, mimetype='image/png')
 
+@main_bp.route('/control/game', methods=['GET', 'POST'])
+@login_required
+def control_game_state():
+    if current_user.role != 'Control':
+        abort(403)
+
+    state = GameState.query.get(1)
+    if not state:
+        state = GameState(id=1)
+        db.session.add(state)
+        db.session.commit()
+
+    if request.method == 'POST':
+        state.current_cycle = int(request.form['current_cycle'])
+        state.current_phase = request.form['current_phase']
+        state.global_alert = request.form['global_alert']
+        state.global_message = request.form['global_message']
+        state.lockdown_enabled = 'lockdown_enabled' in request.form
+        db.session.commit()
+
+    return render_template('control_game_state.html', state=state)

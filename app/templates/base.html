@@ -11,19 +11,21 @@
 <div class="crt>"
     <div class="nav-bar {% if current_user.role == 'Control' %}control-nav{% else %}player-nav{% endif %}">
         REDSHIFT // {{ current_user.role if current_user.is_authenticated else "GUEST" }} MODE<BR/>
+        <a href="{{ url_for('main.index') }}">Home</a>
         {% if current_user.is_authenticated %}
-          <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
           {% if current_user.role == 'Control' %}
-            <a href="{{ url_for('main.dashboard') }}">Characters</a>
-            <a href="{{ url_for('main.control_data') }}">Tables</a>
-          {% else %}
+            <a href="{{ url_for('main.dashboard') }}">Control Dashboard</a>
+            <a href="{{ url_for('main.manage_displays') }}">Displays</a>
+            <a href="{{ url_for('main.control_game_state') }}">Game State</a>
+          {% endif %}
+          {% if current_user.role == 'Player' %}
+            <a href="{{ url_for('main.dashboard') }}">My Character</a>
             {% if character %}
-                <a href="{{ url_for('main.edit_character') }}">Edit Character</a>
-                <a href="{{ url_for('main.claim_item') }}">Claim Item</a>
+              <a href="{{ url_for('main.edit_character') }}">Edit Character</a>
+              <a href="{{ url_for('main.claim_item') }}">Claim Item</a>
             {% else %}
-                <a href="{{ url_for('main.create_character') }}">Create a Character</a>
+              <a href="{{ url_for('main.create_character') }}">Create a Character</a>
             {% endif %}
-            
           {% endif %}
           <a href="{{ url_for('auth.logout') }}">Logout</a>
         {% else %}
@@ -38,14 +40,28 @@
   // TERMINAL NODE // ACCESS AUTH: {{ current_user.username }} 
 
   <form action="{{ url_for('main.set_theme') }}" method="POST" class="errata">
-    <label for="themeSelect">Theme:</label>
-    <select id="themeSelect" name="theme" onchange="this.form.submit()">
-      <option value="theme-green" {% if current_user.theme == 'theme-green' %}selected{% endif %}>Green</option>
-      <option value="theme-yellow" {% if current_user.theme == 'theme-yellow' %}selected{% endif %}>Yellow</option>
-    </select>
+    {% set themes = ['theme-green', 'theme-yellow', 'theme-orange'] %}
+    {% for theme in themes %}
+      {% if current_user.theme != theme %}
+        <button type="submit" name="theme" value="{{ theme }}" class="errata">
+          {{ theme.replace('theme-', '').capitalize() }}
+        </button>
+      {% endif %}
+    {% endfor %}
   </form>
-  
+
+  <main class="main-content">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
 
 </div>
 </body>
 </html>
+

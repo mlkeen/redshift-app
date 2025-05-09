@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Game State Control</h2>
+
+<form method="POST">
+  <label>Cycle:</label>
+  <input type="number" name="current_cycle" value="{{ state.current_cycle }}"><br>
+
+  <label>Phase:</label>
+  <input type="text" name="current_phase" value="{{ state.current_phase }}"><br>
+
+  <label>Global Alert:</label>
+  <select name="global_alert">
+    {% for level in ['Nominal', 'Warning', 'Critical'] %}
+      <option value="{{ level }}" {% if state.global_alert == level %}selected{% endif %}>{{ level }}</option>
+    {% endfor %}
+  </select><br>
+
+  <label>Global Message:</label><br>
+  <textarea name="global_message" rows="4" style="width:100%;">{{ state.global_message }}</textarea><br>
+
+  <label><input type="checkbox" name="lockdown_enabled" {% if state.lockdown_enabled %}checked{% endif %}> Lockdown Enabled</label><br><br>
+
+  <button type="submit">Update Game State</button>
+</form>
+{% endblock %}
