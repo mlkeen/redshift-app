@@ -1,7 +1,7 @@
 import os
 from openpyxl import load_workbook
 from app import create_app, db
-from app.models import Item, Ability, Condition, Display, User
+from app.models import Item, Ability, Condition, Display, User, Character
 from werkzeug.security import generate_password_hash
 
 
@@ -51,6 +51,21 @@ def populate_from_excel(filename):
                     alert_level=get_cell(row, 3) or 'Nominal',
                     animation_mode=get_cell(row, 4) or 'pulse'
                 ))
+
+        # Character Roles
+        if 'Characters' in wb.sheetnames:
+            for row in list(wb['Characters'].iter_rows(min_row=2)):
+                raw_abilities = get_cell(row, 2)  # or whatever column index
+                abilities = [a.strip() for a in raw_abilities.split(',') if a.strip()]
+                db.session.add(Character(
+                    position=get_cell(row, 0),
+                    affiliation=get_cell(row, 1),
+                    abilities=abilities,
+                    items=get_cell(row, 3),
+                    claim_code=get_cell(row, 3)
+                ))
+
+
 
         # Users
         if 'Users' in wb.sheetnames:

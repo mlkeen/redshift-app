@@ -14,7 +14,8 @@ class User(UserMixin, db.Model):
 
 class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), nullable=False)
+    first_name = db.Column(db.String(64))
+    surname = db.Column(db.String(64))
     position = db.Column(db.String(100))
     affiliation = db.Column(db.String(100))
     status = db.Column(db.String(50), default="Nominal")
@@ -22,8 +23,10 @@ class Character(db.Model):
     abilities = db.Column(db.PickleType, default=list)   # List of strings
     conditions = db.Column(db.PickleType, default=list)  # List of strings (empty at start)
     items = db.Column(db.PickleType, default=list)        # List of strings
+    claim_code = db.Column(db.String(16), unique=True, nullable=True)
+    claimed = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 @login_manager.user_loader
 def load_user(user_id):

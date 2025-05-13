@@ -8,6 +8,11 @@ import io
 import os
 from PIL import Image
 from werkzeug.utils import secure_filename
+#import secrets
+#import string
+
+#def generate_claim_code():
+#    return ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -19,18 +24,18 @@ def allowed_file(filename):
 
 main_bp = Blueprint('main', __name__)
 
-@main_bp.route('/')
+@main_bp.route('/') #Initial landing page
 def index():
     return render_template('index.html')
 
-@main_bp.route('/dashboard')
+@main_bp.route('/dashboard') 
 @login_required
 def dashboard():
     if current_user.role == 'Control':
         from .models import User, Character
         all_users = User.query.all()
         all_characters = Character.query.all()
-        return render_template('control_dashboard.html', users=all_users, characters=all_characters)
+        return render_template('control/dashboard.html', users=all_users, characters=all_characters)
     else:
         character = current_user.character
         state = GameState.query.get(1)  # Ensure there's one GameState row
@@ -43,62 +48,6 @@ def dashboard():
         )
         #return render_template('player/dashboard.html', character=current_user.character)
 
-
-@main_bp.route('/character/edit', methods=['GET', 'POST'])
-@login_required
-def edit_character():
-    char = current_user.character
-    if not char:
-        flash("No character assigned.")
-        return redirect(url_for('main.dashboard'))
-
-    if request.method == 'POST':
-        char.name = request.form['name']
-        char.species = request.form['species']
-        char.role = request.form['role']
-        char.stats = request.form['stats']  # Assume stringified JSON for now
-        db.session.commit()
-        flash("Character updated.")
-        return redirect(url_for('main.dashboard'))
-
-    return render_template('edit_character.html', character=char)
-
-@main_bp.route('/character/create', methods=['GET', 'POST'])
-@login_required
-def create_character():
-    if current_user.character:
-        flash("You already have a character.")
-        return redirect(url_for('main.dashboard'))
-
-    if request.method == 'POST':
-        name = request.form['name']
-        position = request.form['position']
-        affiliation = request.form['affiliation']
-        status = request.form['status']
-
-        abilities_raw = request.form.get('abilities', '')
-        items_raw = request.form.get('items', '')
-
-        abilities = [a.strip() for a in abilities_raw.split(',') if a.strip()]
-        items = [i.strip() for i in items_raw.split(',') if i.strip()]
-
-        new_char = Character(
-            name=name,
-            position=position,
-            affiliation=affiliation,
-            status=status,
-            abilities=abilities,
-            items=items,
-            conditions=[],  # Always empty on creation
-            user_id=current_user.id
-        )
-        db.session.add(new_char)
-        db.session.commit()
-        flash("Character created.")
-        return redirect(url_for('main.dashboard'))
-
-
-    return render_template('create_character.html')
 
 
 @main_bp.route('/control/data')
@@ -279,3 +228,40 @@ def control_game_state():
         db.session.commit()
 
     return render_template('control_game_state.html', state=state)
+
+@main_bp.route('/claim/<code>', methods=['GET', 'POST'])
+@login_required
+def claim_character(code):
+    char = Character.query.filter_by(claim_code=code, claimed=False).first_or_404()
+
+    if request.method == 'POST':
+        char.first_name = request.form['first_name']
+        char.surname = request.form['surnamename']
+        char.image_filename = request.form['image_filename']
+        # Handle image upload here
+        char.claimed = True
+        char.user_id = current_user.id
+        db.session.commit()
+        flash("Character successfully claimed.")
+        return redirect(url_for('main.dashboard'))
+
+    return render_template('player/claim_character.html', character=char)
+
+@main_bp.route('/character/edit', methods=['GET', 'POST'])
+@login_required
+def edit_character():
+    char = current_user.character
+    if not char:
+        flash("No character assigned.")
+        return redirect(url_for('main.dashboard'))
+
+    if request.method == 'POST':
+        char.first_name = request.form['first_name']
+        char.surname = request.form['surname']
+        char.image_filename = request.form['image_filename']
+        db.session.commit()
+        flash("Character updated.")
+        return redirect(url_for('main.dashboard'))
+
+    return render_template('player/edit_character.html', character=char)
+

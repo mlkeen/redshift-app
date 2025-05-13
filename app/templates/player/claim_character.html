@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Claim Your Character</h2>
+<p>Affiliation: {{ character.affiliation }}</p>
+<p>Position: {{ character.position }}</p>
+
+<form method="post" enctype="multipart/form-data">
+    <label>Character First Name:</label><br>
+    <input type="text" name="first_name" required><br><br>
+
+    <label>Character Last Name:</label><br>
+    <input type="text" name="surname" required><br><br>
+    
+    <label>Portrait (optional):</label><br>
+    <input type="file" name="image_filename"><br><br>
+  
+  <button type="submit">Claim Character</button>
+</form>
+
+{% endblock %}
