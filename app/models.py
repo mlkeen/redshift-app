@@ -61,9 +61,8 @@ class Display(db.Model):
     last_updated = db.Column(db.DateTime, default=datetime.utcnow)
 
 class GameState(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    current_cycle = db.Column(db.Integer, default=1)
-    current_phase = db.Column(db.String(32), default="Nominal")
-    global_alert = db.Column(db.String(32), default="Nominal")  # or Warning, Critical
-    global_message = db.Column(db.Text)
-    lockdown_enabled = db.Column(db.Boolean, default=False)
+    id = db.Column(db.Integer, primary_key=True, default=1)
+    current_phase = db.Column(db.String(50), default="Not Started")
+    phase_started_at = db.Column(db.DateTime, nullable=True)
+    phase_duration_minutes = db.Column(db.Integer, default=40)
+    alert_level = db.Column(db.String(20), default="Nominal")

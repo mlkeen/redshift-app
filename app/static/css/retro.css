@@ -134,6 +134,7 @@ hr {
     margin: 0 auto 1rem;
     white-space: pre-wrap;
   }
+
 }
 
 @media (max-width: 599px) {
@@ -191,16 +192,23 @@ hr {
 }
 
 .top-bar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  font-size: 0.6rem;
   background-color: var(--color-bg);
   color: var(--color-fg);
+  padding: 0.5em;
+  line-height: 1.1;
+  white-space: normal;  /* allows wrapping */
   display: flex;
-  justify-content: left;
-  padding: 0.25rem 0.75rem;
-  z-index: 100;
+  flex-direction: column; /* stack content */
+  gap: 0.25em; /* spacing between lines */
+  text-transform: capitalize;
+  font-size: 0.6em; 
+}
+
+
+
+
+.main-content {
+  padding-top: 2rem; /* must be >= top-bar height */
 }
 
 .character-block {

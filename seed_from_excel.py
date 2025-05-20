@@ -1,9 +1,9 @@
 import os
 from openpyxl import load_workbook
 from app import create_app, db
-from app.models import Item, Ability, Condition, Display, User, Character
+from app.models import Item, Ability, Condition, Display, User, Character, GameState
 from werkzeug.security import generate_password_hash
-
+from datetime import datetime, timezone
 
 app = create_app()
 
@@ -85,6 +85,28 @@ def populate_from_excel(filename):
                         role=role,
                         theme=theme,
                         is_verified=True
+                    ))
+
+        # GameState (only 1 row expected)
+        if 'GameState' in wb.sheetnames:
+            sheet = wb['GameState']
+            for row in list(sheet.iter_rows(min_row=2)):
+                id_val = int(row[0].value or 1)
+                current_phase = str(row[1].value or "Not Started").strip()
+                duration = int(row[2].value or 40)
+                alert_level = str(row[3].value or "Nominal").strip()
+
+                existing = GameState.query.get(id_val)
+                if existing:
+                    existing.current_phase = current_phase
+                    existing.phase_duration_minutes = duration
+                    existing.alert_level = alert_level
+                else:
+                    db.session.add(GameState(
+                        id=id_val,
+                        current_phase=current_phase,
+                        phase_duration_minutes=duration,
+                        alert_level=alert_level
                     ))
 
 

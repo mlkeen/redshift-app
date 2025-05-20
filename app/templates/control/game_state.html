@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Game State Management</h2>
+<form method="POST">
+  <label>Phase Name:</label>
+  <input type="text" name="phase" required value="{{ state.current_phase }}"><br>
+
+  <label>Phase Duration (minutes):</label>
+  <input type="number" name="duration" value="{{ state.phase_duration_minutes }}"><br><br>
+
+  <button type="submit">Start/Update Phase</button>
+</form>
+
+<p>Current Phase: {{ state.current_phase }}</p>
+<p>Started At: {{ state.phase_started_at or 'Not started yet' }}</p>
+{% endblock %}

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file
 from flask_login import login_required, current_user
-from .models import Character, Item, User, Ability, Condition, Display
+from .models import Character, Item, User, Ability, Condition, Display, GameState
 from app.models import GameState
 from . import db
 import qrcode
@@ -10,6 +10,7 @@ from PIL import Image
 from werkzeug.utils import secure_filename
 #import secrets
 #import string
+from datetime import datetime, timezone
 
 #def generate_claim_code():
 #    return ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
@@ -26,25 +27,27 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/') #Initial landing page
 def index():
-    return render_template('index.html')
+    state = GameState.query.get(1)
+    now = datetime.now()
+    return render_template('index.html', state=state, now=now)
 
 @main_bp.route('/dashboard') 
 @login_required
 def dashboard():
+    state = GameState.query.get(1)
+    now = datetime.now()
     if current_user.role == 'Control':
         from .models import User, Character
         all_users = User.query.all()
         all_characters = Character.query.all()
-        return render_template('control/dashboard.html', users=all_users, characters=all_characters)
+        return render_template('control/dashboard.html', users=all_users, characters=all_characters, state=state, now=now)
     else:
         character = current_user.character
-        state = GameState.query.get(1)  # Ensure there's one GameState row
-        time_remaining = "00:00"  # TODO: replace with actual logic if needed
         return render_template(
             'player/dashboard.html',
             character=current_user.character,
             state=state,
-            time_remaining=time_remaining
+            now=now
         )
         #return render_template('player/dashboard.html', character=current_user.character)
 
@@ -55,17 +58,20 @@ def dashboard():
 def control_data():
     if current_user.role != 'Control':
         abort(403)
+    state = GameState.query.get(1)
+    now = datetime.now()
     abilities = Ability.query.all()
     conditions = Condition.query.all()
     items = Item.query.all()
-    return render_template('control_data.html', abilities=abilities, conditions=conditions, items=items)
+    return render_template('control_data.html', abilities=abilities, conditions=conditions, items=items, state=state, now=now)
 
 @main_bp.route('/control/character/<int:char_id>', methods=['GET', 'POST'])
 @login_required
 def edit_character_control(char_id):
     if current_user.role != 'Control':
         abort(403)
-
+    state = GameState.query.get(1)
+    now = datetime.now()
     char = Character.query.get_or_404(char_id)
     all_items = Item.query.all()
     all_abilities = Ability.query.all()
@@ -89,10 +95,10 @@ def edit_character_control(char_id):
         char=char,
         all_items=all_items,
         all_abilities=all_abilities,
-        all_conditions=all_conditions
+        all_conditions=all_conditions, 
+        state=state,
+        now=now
     )
-
-
 
 
 
@@ -102,6 +108,8 @@ def claim_item():
     if current_user.role != 'Player':
         abort(403)
 
+    state = GameState.query.get(1)
+    now = datetime.now()
     message = None
     if request.method == 'POST':
         code = request.form['code'].strip().upper()
@@ -119,7 +127,7 @@ def claim_item():
             db.session.commit()
             message = f"Claimed item: {item.name}"
         
-    return render_template('claim_item.html', message=message)
+    return render_template('claim_item.html', message=message, state=state, now=now)
 
 @main_bp.route('/set_theme', methods=['POST'])
 @login_required
@@ -137,14 +145,18 @@ def set_theme():
 def manage_displays():
     if current_user.role != 'Control':
         abort(403)
+    state = GameState.query.get(1)
+    now = datetime.now()
     displays = Display.query.all()
-    return render_template('displays.html', displays=displays)
+    return render_template('display/displays.html', displays=displays, state=state, now=now)
 
 @main_bp.route('/control/displays/edit/<int:display_id>', methods=['GET', 'POST'])
 @login_required
 def edit_display(display_id):
     if current_user.role != 'Control':
         abort(403)
+    state = GameState.query.get(1)
+    now = datetime.now()
     display = Display.query.get_or_404(display_id)
     if 'lineart' in request.files:
         file = request.files['lineart']
@@ -167,20 +179,23 @@ def edit_display(display_id):
         db.session.commit()
         flash("Display updated.")
         return redirect(url_for('main.manage_displays'))
-    return render_template('edit_display.html', display=display)
+    return render_template('display/edit_display.html', display=display, state=state, now=now)
     
 
 @main_bp.route('/display/<int:display_id>')
 def show_display(display_id):
     display = Display.query.get_or_404(display_id)
     state = GameState.query.get(1)
-    return render_template('show_display.html', display=display)
+    now = datetime.now()
+    return render_template('display/show_display.html', display=display, state=state, now=now)
 
 @main_bp.route('/control/displays/new', methods=['GET', 'POST'])
 @login_required
 def create_display():
     if current_user.role != 'Control':
         abort(403)
+    state = GameState.query.get(1)
+    now = datetime.now()
     if request.method == 'POST':
         name = request.form['name']
         location = request.form.get('location', '')
@@ -194,7 +209,7 @@ def create_display():
         db.session.add(new_display)
         db.session.commit()
         return redirect(url_for('main.manage_displays'))
-    return render_template('create_display.html')
+    return render_template('display/create_display.html', state=state, now=now)
 
 @main_bp.route('/display/<int:display_id>/qr')
 def display_qr(display_id):
@@ -207,49 +222,95 @@ def display_qr(display_id):
     buf.seek(0)
     return send_file(buf, mimetype='image/png')
 
-@main_bp.route('/control/game', methods=['GET', 'POST'])
+
+@main_bp.route('/control/game_state', methods=['GET', 'POST'])
 @login_required
 def control_game_state():
     if current_user.role != 'Control':
         abort(403)
 
     state = GameState.query.get(1)
+    now = datetime.now()
+
+    # Create GameState if it doesn't exist
     if not state:
         state = GameState(id=1)
         db.session.add(state)
         db.session.commit()
 
     if request.method == 'POST':
-        state.current_cycle = int(request.form['current_cycle'])
-        state.current_phase = request.form['current_phase']
-        state.global_alert = request.form['global_alert']
-        state.global_message = request.form['global_message']
-        state.lockdown_enabled = 'lockdown_enabled' in request.form
-        db.session.commit()
+        phase = request.form.get('phase', '').strip()
+        duration = request.form.get('duration', '40').strip()
 
-    return render_template('control_game_state.html', state=state)
+        if not phase:
+            flash("Phase name is required.", "error")
+        else:
+            state.current_phase = phase
+            state.phase_started_at = now
+            state.phase_duration_minutes = int(duration) if duration.isdigit() else 40
+            db.session.commit()
+            flash(f"Phase updated to '{state.current_phase}'.")
 
+    return render_template('control/game_state.html', state=state, now=now)
+
+
+
+
+@main_bp.route('/claim/', methods=['GET', 'POST'])
 @main_bp.route('/claim/<code>', methods=['GET', 'POST'])
 @login_required
-def claim_character(code):
-    char = Character.query.filter_by(claim_code=code, claimed=False).first_or_404()
+def claim_character(code=None):
+    # Handle form where user types in their claim code
+    state = GameState.query.get(1)
+    now = datetime.now()
+    if not code:
+        if request.method == 'POST':
+            code = request.form.get('code', '').strip()
+            return redirect(url_for('main.claim_character', code=code))
+        return render_template('player/claim_character_prompt.html', state=state, now=now)  # claim code entry form
 
-    if request.method == 'POST':
-        char.first_name = request.form['first_name']
-        char.surname = request.form['surnamename']
-        char.image_filename = request.form['image_filename']
-        # Handle image upload here
-        char.claimed = True
-        char.user_id = current_user.id
-        db.session.commit()
-        flash("Character successfully claimed.")
-        return redirect(url_for('main.dashboard'))
+    # Look up the character using the provided claim code
+    char = Character.query.filter_by(claim_code=code).first()
 
-    return render_template('player/claim_character.html', character=char)
+    if not char:
+        flash("Invalid claim code. Please try again.")
+        return redirect(url_for('main.claim_character'))
+
+    if char.claimed:
+        flash("This character has already been claimed.")
+        return redirect(url_for('main.claim_character'))
+
+    # Show character claim form
+    if request.method == 'GET':
+        return render_template('player/claim_character.html', character=char, state=state, now=now)
+
+    # POST: process the character claim form
+    char.first_name = request.form.get('first_name', '').strip()
+    char.surname = request.form.get('surname', '').strip()
+
+    # Handle optional portrait upload
+    file = request.files.get('portrait')
+    if file and file.filename != '':
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        char.image_filename = filename
+
+    char.claimed = True
+    char.user_id = current_user.id
+    db.session.commit()
+
+    flash("Character successfully claimed.")
+    return redirect(url_for('main.dashboard'))
+
+
+
 
 @main_bp.route('/character/edit', methods=['GET', 'POST'])
 @login_required
 def edit_character():
+    state = GameState.query.get(1)
+    now = datetime.now()
     char = current_user.character
     if not char:
         flash("No character assigned.")
@@ -263,5 +324,5 @@ def edit_character():
         flash("Character updated.")
         return redirect(url_for('main.dashboard'))
 
-    return render_template('player/edit_character.html', character=char)
+    return render_template('player/edit_character.html', character=char, state=state, now=now)
 
