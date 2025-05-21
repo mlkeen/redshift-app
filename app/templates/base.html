@@ -7,8 +7,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
 
   <script>
-  const phaseStart = new Date("{{ state.phase_started_at.isoformat() }}");
-  const phaseDuration = {{ state.phase_duration_minutes }} * 60; // seconds
+    {% if state and state.phase_started_at %}
+      const phaseStart = new Date("{{ state.phase_started_at.isoformat() }}");
+    {% else %}
+      const phaseStart = null;
+    {% endif %}
+    const phaseDuration = {{ state.phase_duration_minutes if state else 0 }} * 60; // seconds
   </script>
 
 </head>
@@ -37,20 +41,23 @@
 
 
 <script>
-  function updateTimer() {
-    const now = new Date();
-    const elapsed = Math.floor((now - phaseStart) / 1000); // in seconds
-    const remaining = Math.max(0, phaseDuration - elapsed);
-
-    const mins = Math.floor(remaining / 60).toString().padStart(2, '0');
-    const secs = (remaining % 60).toString().padStart(2, '0');
-
-    document.getElementById("phase-timer").textContent =
-      ` ${mins}:${secs} REMAINING`;
+function updateTimer() {
+  if (!phaseStart) {
+    document.getElementById("phase-timer").textContent = "Not started";
+    return;
   }
 
-  updateTimer(); // run once immediately
-  setInterval(updateTimer, 1000); // update every second
+  const now = new Date();
+  const elapsed = Math.floor((now - phaseStart) / 1000);
+  const remaining = Math.max(0, phaseDuration - elapsed);
+
+  const mins = Math.floor(remaining / 60).toString().padStart(2, '0');
+  const secs = (remaining % 60).toString().padStart(2, '0');
+
+  document.getElementById("phase-timer").textContent =
+    ` ${mins}:${secs} REMAINING`;
+}
+
 </script>
 
 </div>

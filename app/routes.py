@@ -43,11 +43,13 @@ def dashboard():
         return render_template('control/dashboard.html', users=all_users, characters=all_characters, state=state, now=now)
     else:
         character = current_user.character
+        all_conditions = {cond.name: cond for cond in Condition.query.all()}
         return render_template(
             'player/dashboard.html',
             character=current_user.character,
             state=state,
-            now=now
+            now=now,
+            all_conditions=all_conditions.values()
         )
         #return render_template('player/dashboard.html', character=current_user.character)
 

@@ -7,7 +7,7 @@
      alt="portrait">
 
   <div class="char-info">
-    <strong>{{ current_user.character.name.split()[:-1]|join(' ') }} {{ current_user.character.name.split()[-1]|upper }}</strong><br>
+    <strong>{{ current_user.character.first_name }} {{ current_user.character.surname.upper() }}</strong><br>
     {{ current_user.character.position }}<br>
     {{ current_user.character.affiliation }}<br>
     <a href="{{ url_for('main.edit_character') }}">Edit</a>
@@ -19,24 +19,30 @@
 </div>
 {% endif %}
 
-{% if current_user.character and current_user.character.alerts %}
-<div class="alert-block">
-  {% for alert in current_user.character.alerts %}
-    <p class="alert">{{ alert }}</p>
-  {% endfor %}
-</div>
+
+{# 🔴 Game Alert Section — only shows when alert_level is not Nominal or empty #}
+{% if state and state.alert_level and state.alert_level != "Nominal" %}
+  <div class="alert-section" style="color: red; font-weight: bold; padding: 0.5em;">
+    ALERT: {{ state.alert_level }}
+  </div>
 {% endif %}
 
-{% if current_user.character and current_user.character.conditions %}
-<div class="condition-block">
-  <h3>Conditions</h3>
-  <ul>
-    {% for condition in current_user.character.conditions %}
-      <li>{{ condition }}</li>
-    {% endfor %}
-  </ul>
-</div>
+{# ⚠️ Condition Section — only shows if character has conditions #}
+{% if character and character.conditions and character.conditions|length > 0 %}
+  <div class="condition-section">
+    <h3>Conditions</h3>
+    <ul>
+      {% for cond in character.conditions %}
+        <li>
+          <button class="condition-btn" onclick="showConditionPopup('{{ cond }}')">
+            {{ cond }}
+          </button>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endif %}
+
 
 <div class="abilities-block">
   <h3>Abilities</h3>
@@ -47,5 +53,46 @@
   <h3>Items</h3>
   <!-- To be populated -->
 </div>
+
+
+<div id="condition-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span id="close-modal" onclick="hideConditionPopup()" style="cursor: pointer;">&times;</span>
+    <h2 id="condition-name"></h2>
+    <p id="condition-description"></p>
+  </div>
+</div>
+
+<script>
+  const conditionData = {
+    {% for cond in all_conditions %}
+      "{{ cond.name }}": {
+        description: "{{ cond.description | escape }}",
+        clear: "{{ cond.clear_method | escape }}"
+      }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  };
+
+  function showConditionPopup(name) {
+    const data = conditionData[name];
+    document.getElementById('condition-name').textContent = name;
+    document.getElementById('condition-description').textContent =
+      `${data.description}\n\nHow to clear: ${data.clear}`;
+    document.getElementById('condition-modal').style.display = 'block';
+  }
+
+  function hideConditionPopup() {
+    document.getElementById('condition-modal').style.display = 'none';
+  }
+
+  // Optional: close modal when clicking outside it
+  window.onclick = function(event) {
+    const modal = document.getElementById('condition-modal');
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  }
+</script>
+
 
 {% endblock %}

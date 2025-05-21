@@ -20,13 +20,16 @@ class Character(db.Model):
     affiliation = db.Column(db.String(100))
     status = db.Column(db.String(50), default="Nominal")
     image_filename = db.Column(db.String(128))  # optional
+    resolve = db.Column(db.Integer, default=1)
+    skill = db.Column(db.Integer, default=1)
+    knowledge = db.Column(db.Integer, default=1)
+    luck = db.Column(db.Integer, default=1)
     abilities = db.Column(db.PickleType, default=list)   # List of strings
     conditions = db.Column(db.PickleType, default=list)  # List of strings (empty at start)
     items = db.Column(db.PickleType, default=list)        # List of strings
     claim_code = db.Column(db.String(16), unique=True, nullable=True)
     claimed = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -40,14 +43,15 @@ class Ability(db.Model):
 class Condition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    effect = db.Column(db.Text)
+    effect = db.Column(db.PickleType, default=list)
+    description = db.Column(db.Text)
+    clear_method = db.Column(db.PickleType, default=list)
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.Text)
     code = db.Column(db.String(10), unique=True, nullable=False)
-
 
 class Display(db.Model):
     id = db.Column(db.Integer, primary_key=True)

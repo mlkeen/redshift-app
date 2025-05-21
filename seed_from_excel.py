@@ -36,9 +36,16 @@ def populate_from_excel(filename):
         # Conditions
         if 'Conditions' in wb.sheetnames:
             for row in list(wb['Conditions'].iter_rows(min_row=2)):
+                raw_clear_method = get_cell(row, 2)  # or whatever column index
+                clear_method = [a.strip() for a in raw_clear_method.split(',') if a.strip()]
+                raw_effect = get_cell(row, 3)  # or whatever column index
+                effect = [a.strip() for a in raw_effect.split(',') if a.strip()]
+
                 db.session.add(Condition(
                     name=get_cell(row, 0),
-                    effect=get_cell(row, 1)
+                    description=get_cell(row, 1),
+                    clear_method=clear_method,
+                    effect=effect
                 ))
 
         # Displays
@@ -62,7 +69,7 @@ def populate_from_excel(filename):
                     affiliation=get_cell(row, 1),
                     abilities=abilities,
                     items=get_cell(row, 3),
-                    claim_code=get_cell(row, 3)
+                    claim_code=get_cell(row, 4)
                 ))
 
 
