@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% set title = "Dashboard" %}
+{% block content %}
+
+        <form method="get" action="{{ url_for('web.game_create') }}">
+          <button class="btn primary" type="submit">CREATE GAME</button>
+        </form>
+
+
+<div class="card">
+  <div class="head">
+    <div class="title">GAMES</div>
+  </div>
+  <div class="body">
+
+    <table style="width:100%; border-collapse:collapse">
+      <thead>
+        <tr>
+          <th align="left">ID</th>
+          <th align="left">Name</th>
+          <th align="left">Owner</th>
+          <th align="left">Status</th>
+          <th align="left">Start</th>
+          <th align="left">Tick</th>
+          <th align="left">Actions</th>
+          <th align="left">Join</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for g in games %}
+        <tr>
+          <td>{{ g.id }}</td>
+          <td><a href="{{ url_for('web.lobby', game_id=g.id) }}">{{ g.name }}</a></td>
+          <td>{{ g.host.display_name if g.host else ("User #" ~ g.host_id) }}</td>
+          <td>{{ g.status }}</td>
+          <td>{{ g.start_at or "—" }}</td>
+          <td>{{ g.tick_length_seconds }}s</td>
+          <td style="display:flex; gap:8px; flex-wrap:wrap">
+
+            <a class="btn" href="{{ url_for('web.lobby', game_id=g.id) }}">Open</a>
+
+            {% if current_user.id == g.host_id %}
+              {% if g.status == "running" %}
+                <form method="post" action="{{ url_for('web.pause_game', game_id=g.id) }}">
+                  <button class="btn" type="submit">Pause</button>
+                </form>
+              {% elif g.status == "paused" %}
+                <form method="post" action="{{ url_for('web.resume_game', game_id=g.id) }}">
+                  <button class="btn" type="submit">Resume</button>
+                </form>
+              {% endif %}
+
+              {% if g.status != "ended" %}
+                <form method="post" action="{{ url_for('web.end_game', game_id=g.id) }}">
+                  <button class="btn warn" type="submit">End</button>
+                </form>
+              {% endif %}
+
+              <form method="post" action="{{ url_for('web.delete_game', game_id=g.id) }}"
+                    onsubmit="return confirm('Delete game {{ g.id }}? This cannot be undone.');">
+                <button class="btn danger" type="submit">Delete</button>
+              </form>
+            {% endif %}
+
+          </td>
+          <td><a class="btn" href="{{ url_for('web.join_game', join_code=g.join_code) }}">Join</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+{% endblock %}

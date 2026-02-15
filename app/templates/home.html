@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% set title = "Redshift" %}
+{% block content %}
+  <div class="grid">
+    <div class="card">
+      <div class="head"><div class="title">STATUS</div><span class="badge warn">WARNING</span></div>
+      <div class="body">
+        <div class="small">Development UI — Flask-only HUD mock.</div>
+        <div class="hr"></div>
+        <div class="small">Next steps: create a game, open the Engineering panel, drag tokens into slots.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="head"><div class="title">ACTIONS</div></div>
+      <div class="body" style="display:grid;gap:10px">
+        {% if current_user.is_authenticated %}
+          <a class="btn primary" href="{{ url_for('web.dashboard') }}">GO TO DASHBOARD</a>
+        {% else %}
+          <a class="btn primary" href="{{ url_for('web.signup') }}">CREATE ACCOUNT</a>
+          <a class="btn" href="{{ url_for('web.login') }}">LOG IN</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

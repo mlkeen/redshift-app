@@ -1,0 +1,45 @@
+{
+  "id": "engineering_demo",
+  "name": "Engineering Demo",
+  "panels": {
+    "engineering": {
+      "title": "ENGINEERING",
+      "zones": {
+        "inventory": {
+          "label": "INVENTORY",
+          "accepts": [
+            "coolant_regulator",
+            "wrench"
+          ],
+          "capacity": 12
+        },
+        "cooling_slot_1": {
+          "label": "COOLING SLOT 1",
+          "accepts": [
+            "coolant_regulator"
+          ],
+          "capacity": 1
+        },
+        "cooling_slot_2": {
+          "label": "COOLING SLOT 2",
+          "accepts": [
+            "coolant_regulator"
+          ],
+          "capacity": 1,
+          "trigger": "install_regulator_slot2"
+        },
+        "cooling_slot_3": {
+          "label": "COOLING SLOT 3",
+          "accepts": [
+            "coolant_regulator"
+          ],
+          "capacity": 1
+        }
+      }
+    },
+    "power": {
+      "title": "POWER DISTRIBUTION",
+      "zones": {}
+    }
+  }
+}

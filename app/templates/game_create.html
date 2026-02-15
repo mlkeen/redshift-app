@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% set title = "Create Game" %}
+{% set badge = "CREATE" %}
+{% block content %}
+  <div class="grid">
+    <div class="card">
+      <div class="head"><div class="title">CREATE GAME</div></div>
+      <div class="body">
+        <form method="post" action="{{ url_for('web.new_game') }}" style="display:grid;gap:12px;max-width:520px">
+          <div class="small">Game Name</div>
+          <input name="name" placeholder="e.g., Echoes in the Relay"
+            style="padding:12px;border-radius:12px;border:1px solid rgba(46,242,255,.22);background:rgba(0,0,0,.18);color:var(--ink)">
+
+          <div class="small">Tick Length (seconds)</div>
+          <input name="tick_length_seconds" type="number" min="10" max="3600" value="120"
+            style="padding:12px;border-radius:12px;border:1px solid rgba(46,242,255,.22);background:rgba(0,0,0,.18);color:var(--ink)">
+
+          <div class="small">Start Time</div>
+          <input name="start_at" type="datetime-local"
+            value="{{ dt_default.strftime('%Y-%m-%dT%H:%M') }}"
+            style="padding:12px;border-radius:12px;border:1px solid rgba(46,242,255,.22);background:rgba(0,0,0,.18);color:var(--ink)">
+
+          <div class="small">Public game (visible on dashboard)</div>
+          <input type="checkbox" name="is_public" value="1">
+
+          <button class="btn primary" type="submit">CREATE</button>
+          <a class="btn" href="{{ url_for('web.dashboard') }}">CANCEL</a>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="head"><div class="title">NOTES</div></div>
+      <div class="body small">
+        <div>• Tick length is the “ship heartbeat” used by systems like heat accumulation.</div>
+        <div>• Start time is scheduled; we’ll enforce auto-start next.</div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

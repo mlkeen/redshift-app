@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% set title = "Sign Up" %}
+{% block content %}
+  <div class="grid">
+    <div class="card">
+      <div class="head"><div class="title">SIGN UP</div></div>
+      <div class="body">
+        <form method="post" action="{{ url_for('web.signup') }}" style="display:grid;gap:10px;max-width:380px">
+          <input name="email" placeholder="email" style="padding:12px;border-radius:12px;border:1px solid rgba(46,242,255,.22);background:rgba(0,0,0,.18);color:var(--ink)">
+          <input name="display_name" placeholder="display name" style="padding:12px;border-radius:12px;border:1px solid rgba(46,242,255,.22);background:rgba(0,0,0,.18);color:var(--ink)">
+          <input name="password" type="password" placeholder="password" style="padding:12px;border-radius:12px;border:1px solid rgba(46,242,255,.22);background:rgba(0,0,0,.18);color:var(--ink)">
+          <button class="btn primary" type="submit">CREATE ACCOUNT</button>
+          <div class="small">Already have an account? <a href="{{ url_for('web.login') }}">Log in</a></div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

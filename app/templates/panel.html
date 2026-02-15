@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% set title = panel_key|capitalize %}
+{% set badge = panel_key %}
+{% block content %}
+<div class="grid">
+  <div class="card">
+    <div class="body">
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='engineering') }}">ENGINEERING</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='power') }}">POWER</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='comms') }}">COMMUNICATIONS</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='space') }}">NEAR OBJECT MONITORING</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='exterior') }}">EXTERIOR SYSTEMS</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='interior') }}">INTERNAL SYSTEMS</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='ops') }}">OPERATIONS</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='mess') }}">MESS</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='biolab') }}">BIOLOGICAL LABORATORY</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='physicslab') }}">HVPD ARRAY</a>
+      <a class="menu_btn" href="{{ url_for('web.panel', game_id=game.id, panel_key='govlab') }}">[restricted]</a>
+    </div>
+  </div>
+
+    <div class="card" id="Panel_Settings">
+      {% if panel_key == "engineering" %}
+        <div class="card" style="margin-top:16px">
+      <div class="head">
+        <div class="title">{{ panel_key|upper }} PANEL</div>
+        <span class="badge">DRAG · DROP</span>
+      </div>
+      <div class="body panel-grid">
+        <div class="zone" data-zone="inventory">
+          <div class="ztitle">INVENTORY</div>
+          <div class="zbody"></div>
+        </div>
+
+        <div style="display:grid;gap:14px">
+          <div class="zone" data-zone="cooling_slot_1">
+            <div class="ztitle">COOLING SLOT 1</div>
+            <div class="zbody"></div>
+          </div>
+          <div class="zone" data-zone="cooling_slot_2">
+            <div class="ztitle">COOLING SLOT 2</div>
+            <div class="zbody"></div>
+          </div>
+          <div class="zone" data-zone="cooling_slot_3">
+            <div class="ztitle">COOLING SLOT 3</div>
+            <div class="zbody"></div>
+          </div>
+        </div>
+      </div>
+        </div>
+      {% endif %}
+    <div class="card">
+      {% if panel_key == "engineering" %}
+          <div class="kpi">
+            <div class="tile">
+              <div class="label">Coolant Efficiency</div>
+              <div class="value" id="kpi_coolant">—</div>
+            </div>
+            <div class="tile">
+              <div class="label">Heat</div>
+              <div class="value" id="kpi_heat">—</div>
+            </div>
+          </div>
+
+      {% elif panel_key == "power" %}
+        <div class="card">
+          <div class="head">POWER ALLOCATION</div>
+          <div class="body">
+            <form method="post" action="{{ url_for('web.update_power', game_id=game_id) }}" id="powerForm">
+              <div class="card">
+                <div class="head"><div class="title">FUSION OUTPUT</div></div>
+                <div class="body">
+                  <div class="small">Produced power = output × 2</div>
+                  <div>
+                    <input type="range"
+                            id="fusion_output"
+                            name="fusion_output"
+                            min="0"
+                            max="{{ state.get('max_output', 6) }}"
+                            step="1"
+                            value="{{ fusion }}"
+                            style="flex:1">
+                    <span class="badge" id="fusion_output_val">{{ fusion }}</span>
+                    <span class="badge" id="produced_val">{{ produced }}</span>
+                  </div>
+
+                  <div class="small">
+                    Produced: <span id="produced_text">{{ produced }}</span> • Allocated: <span id="allocated_text">—</span> • Remaining: <span id="remaining_text">—</span>
+                  </div>
+                  <div class="small" id="alloc_error">Allocation exceeds produced power.</div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="head">POWER ALLOCATION</div>
+                <div class="body">
+                  {% set alloc = state.get('alloc', {}) %}
+                <div>
+                <label>Engineering</label>
+                <div style="display:flex;align-items:center;gap:12px">
+                  <input type="range" class="alloc"
+                          name="alloc_engineering" data-key="engineering"
+                          min="0" max="{{ produced }}" step="1"
+                          value="{{ alloc.get('engineering', 0) }}"
+                          style="flex:1">
+                  <span class="badge alloc_val" data-key="engineering">{{ alloc.get('engineering', 0) }}</span>
+                </div>
+              </div>
+
+              <div>
+                <label>Comms</label>
+                <div style="display:flex;align-items:center;gap:12px">
+                  <input type="range" class="alloc"
+                          name="alloc_comms" data-key="comms"
+                          min="0" max="{{ produced }}" step="1"
+                          value="{{ alloc.get('comms', 0) }}"
+                          style="flex:1">
+                  <span class="badge alloc_val" data-key="comms">{{ alloc.get('comms', 0) }}</span>
+                </div>
+              </div>
+
+              <div>
+                <label>Biolab</label>
+                <div style="display:flex;align-items:center;gap:12px">
+                  <input type="range" class="alloc"
+                              name="alloc_biolab" data-key="biolab"
+                              min="0" max="{{ produced }}" step="1"
+                              value="{{ alloc.get('biolab', 0) }}"
+                              style="flex:1">
+                  <span class="badge alloc_val" data-key="biolab">{{ alloc.get('biolab', 0) }}</span>
+                </div>
+              </div>
+
+              <div>
+                <label>Life Support</label>
+                <div style="display:flex;align-items:center;gap:12px">
+                  <input type="range" class="alloc"
+                              name="alloc_life_support" data-key="life_support"
+                              min="0" max="{{ produced }}" step="1"
+                              value="{{ alloc.get('life_support', 0) }}"
+                              style="flex:1">
+                  <span class="badge alloc_val" data-key="life_support">{{ alloc.get('life_support', 0) }}</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn">Apply Changes</button>
+
+              </form>
+
+            </div>
+        </div>
+
+
+      {% elif panel_key == "exterior" %}
+        <div>Radiator control/repair, exterior damage details</div>
+
+      {% elif panel_key == "space" %}
+        <div>Tracking of objects in space, countermeasure controls. </div>
+
+      {% elif panel_key == "comms" %}
+        <div>Laser comms with a time delay (i.e. communicating at a time delay)
+          Player to player messages, shipwide alerts, etc.
+        </div>
+
+      {% elif panel_key == "interior" %}
+        <div>Internal ship systems. (i.e. Alien control game)</div>
+
+      {% elif panel_key == "ops" %}
+        <div>monitor ship systems, captain controls. Control docking locks, etc., enviro controls,</div>
+
+      {% elif panel_key == "mess" %}
+        <div>Alerts and voting</div>
+
+      {% elif panel_key == "biolab" %}
+        <div>TBD</div>
+
+      {% elif panel_key == "physicslab" %}
+        <div>High Velocity Particle Detection array</div>
+
+      {% elif panel_key == "govlab" %}
+        <div>Restricted government lab</div>
+
+
+      {% else %}
+        <div class="small">Unknown panel: {{ panel_key }}</div>
+      {% endif %}
+      
+    </div>
+
+
+    </div>
+
+  
+{% if panel_key == "power" %}
+  <script src="{{ url_for('static', filename='js/power_sliders.js') }}"></script>
+{% endif %}
+
+  <script src="{{ url_for('static', filename='js/panel.js') }}"></script>
+
+
+{% endblock %}

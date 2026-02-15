@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>{{ title or "Redshift" }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/hud.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="topbar">
+        <div class="brand">
+          <div class="pip"></div>
+          <div>REDSHIFT</div>
+          {% if badge %}
+            <span class="badge {{ badge_class or '' }}">{{ badge }} PANEL</span>
+          {% endif %}
+        </div>
+
+        {% if game_id %}
+          <div>
+            GAME {{ game_id }}
+            {% if game_name %}{{ game_name }}{% endif %}
+          </div>
+
+          <div>
+            TICK
+            <span id="tick_value">—</span>
+            [<span id="timer_label">—</span>
+            <span id="timer_value">—</span>]
+          </div>
+
+
+        <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
+        <script>
+          RedshiftTimer.init({{ game_id|tojson }});
+        </script>
+        {% endif %}
+
+        <div class="top_user">
+          {% if current_user.is_authenticated %}
+            <span class="badge">USER · {{ current_user.display_name }}</span>
+            {% if game_id is defined and game_id %}
+              <a class="menu_btn" href="{{ url_for('web.lobby', game_id=game_id) }}">LOBBY</a>
+            {% endif %}
+            <a class="menu_btn" href="{{ url_for('web.logout') }}">LOG OUT</a>
+            {% else %}
+            <a class="menu_btn" href="{{ url_for('web.login') }}">LOG IN</a>
+            <a class="menu_btn" href="{{ url_for('web.signup') }}">SIGN UP</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div style="margin-top:12px">
+            {% for cat,msg in messages %}
+              <div class="card" style="margin-bottom:10px">
+                <div class="head">
+                  <div class="title">{{ cat|upper }}</div>
+                </div>
+                <div class="body">{{ msg }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+
+
+
+
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>
