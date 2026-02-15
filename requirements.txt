@@ -1,1 +1,8 @@
+Flask
+Flask-Login
+Flask-SQLAlchemy
+Flask-Migrate
+SQLAlchemy
+alembic
 gunicorn
+Werkzeug
